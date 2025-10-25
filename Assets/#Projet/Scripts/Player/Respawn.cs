@@ -1,51 +1,62 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
+using StarterAssets; // important, pour accéder au ThirdPersonController
 
-public class respawn : MonoBehaviour
+public class Respawn : MonoBehaviour
 {
     [SerializeField] private string triggerTag = "Water";
     [SerializeField] private int framesAvantRespawn = 90;
-    [SerializeField] private float offsetY = 0.2f; //decalage pour eviter de retoucher le trigger direct
+    [SerializeField] private float offsetY = 0.5f;
+    [SerializeField] private float freezeDuration = 0.2f;
 
-    private List<Vector3> positionHistory = new List<Vector3>();
-    private Rigidbody rb;
+    private List<Vector3> positions = new List<Vector3>();
+    private ThirdPersonController controller;
+    private StarterAssetsInputs inputs;
 
-    private void Awake()
+    void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        controller = GetComponent<ThirdPersonController>();
+        inputs = GetComponent<StarterAssetsInputs>();
     }
 
-    private void Update()
+    void Update()
     {
-        positionHistory.Add(transform.position); // on rajoute les positions à la list
-        
-        if (positionHistory.Count > 300) // limite la list à 300 frames
-            positionHistory.RemoveAt(0);
+        positions.Add(transform.position);
+        if (positions.Count > 300)
+            positions.RemoveAt(0);
     }
 
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(triggerTag))
-        {
-           
-            int index = Mathf.Max(0, positionHistory.Count - framesAvantRespawn - 1); // alcule la position de x frames avant le trigger
-            Vector3 respawnPos = positionHistory[index];
-            respawnPos.y += offsetY; // decalage vertical pour pas retomber dans le trigger
+        if (!other.CompareTag(triggerTag) || positions.Count <= framesAvantRespawn) return;
 
-            if (rb != null)
-                rb.isKinematic = true;
+        int i = positions.Count - framesAvantRespawn - 1;
+        Vector3 respawnPos = positions[i] + Vector3.up * offsetY;
 
-            transform.position = respawnPos;// deplacement joueur
+        Debug.Log($"[Respawn Triggered] Vers {respawnPos}");
+        StartCoroutine(RespawnRoutine(respawnPos));
+    }
 
-           
-            if (rb != null) // reset vitesses et réactivation physique
-            {
-                rb.linearVelocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-                rb.isKinematic = false;
-            }
+    private IEnumerator RespawnRoutine(Vector3 respawnPos)
+    {
+        // 1️⃣ Désactiver le contrôleur et les inputs
+        controller.enabled = false;
+        inputs.move = Vector2.zero;
+        inputs.look = Vector2.zero;
+        inputs.jump = false;
+        inputs.sprint = false;
 
-            Debug.Log($"Respawn effectué à la position : {respawnPos}");
-        }
+        // 2️⃣ Déplacer le joueur
+        transform.position = respawnPos;
+        Debug.Log($"[Respawn] Position appliquée : {transform.position}");
+
+        // 3️⃣ Petite pause pour stabiliser le contrôleur
+        yield return new WaitForSeconds(freezeDuration);
+
+        // 4️⃣ Réactiver le contrôleur
+        controller.enabled = true;
+
+        Debug.Log("[Respawn] Contrôleur réactivé ✅");
     }
 }
