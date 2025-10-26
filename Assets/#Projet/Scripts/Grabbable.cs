@@ -1,38 +1,42 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class Grabbable : MonoBehaviour
 {
-
-    [SerializeField] private GameObject PlayerHand;
-    [SerializeField] private TextMeshProUGUI interactText; // Texte UI qui dit "Appuyez sur A"
-    private GameObject canBeGrab;
-    private GameObject heldObject;
-    private bool CloseToTheObject = false;
+    [SerializeField] private TextMeshProUGUI interactText; 
+    [SerializeField] private Sprite itemIcon;
     
+    private GameObject canBeGrab; 
+    private GameObject heldObject; 
+    private bool CloseToTheObject = false; 
+    private bool isHidden = false; 
+    private Vector3 initialPosition;
+    private Quaternion initialRotation;
 
     void Start()
     {
+        initialPosition = transform.position;
+        initialRotation = transform.rotation;
+
         if (interactText != null)
-            interactText.gameObject.SetActive(false); // on affiche pas le A tout de suite
+            interactText.gameObject.SetActive(false); 
     }
 
     void Update()
     {
-        if (CloseToTheObject && canBeGrab != null) // si assez proche de l'objet et qu'il peut etre attrapable
+        if (CloseToTheObject && canBeGrab != null)
         {
-            if (Input.GetKeyDown(KeyCode.Q)) // si on appuie sur la touche A
+            if (Input.GetKeyDown(KeyCode.Q))
             {
-                Debug.Log("A est préssée");
+                Debug.Log("Q pressé");
 
                 if (heldObject == null)
                 {
-                    GrabbableObject(); // on attrape
+                    GrabbableObject();
                 }
                 else
                 {
-                    ReleaseObject(); // on relache
+                    ReleaseObject();
                 }
             }
         }
@@ -41,25 +45,36 @@ public class Grabbable : MonoBehaviour
     public void GrabbableObject()
     {
         heldObject = canBeGrab;
-        canBeGrab.transform.SetParent(PlayerHand.transform); // attache objet à la main du player
-        canBeGrab.transform.localPosition = Vector3.zero;
+        heldObject.SetActive(false); 
+        isHidden = true;
+
+        if (Inventaire.instance != null && itemIcon != null)
+        {
+            Inventaire.instance.AddItem(itemIcon);
+        }
 
         if (interactText != null)
-        {
-            interactText.gameObject.SetActive(false); // désactive le A quand on a l'bjet en main
-        }
+            interactText.gameObject.SetActive(false);
     }
 
     public void ReleaseObject()
     {
-        heldObject.transform.SetParent(null); // detache l'objet de la main
+        if (heldObject == null) return;
+
+        heldObject.SetActive(true);
+        heldObject.transform.position = initialPosition;
+        heldObject.transform.rotation = initialRotation;
+        isHidden = false;
+
+        if (Inventaire.instance != null)
+        {
+            Inventaire.instance.RemoveItem();
+        }
 
         heldObject = null;
 
         if (interactText != null)
-        {
-            interactText.text = "A";
-        }
+            interactText.text = "Q";
     }
 
     private void OnTriggerEnter(Collider other)
@@ -68,11 +83,9 @@ public class Grabbable : MonoBehaviour
         {
             canBeGrab = other.gameObject;
             CloseToTheObject = true;
-        }
 
-        if (interactText != null) // apparition du A
-        {
-            interactText.gameObject.SetActive(true);
+            if (interactText != null)
+                interactText.gameObject.SetActive(true);
         }
     }
 
@@ -84,10 +97,7 @@ public class Grabbable : MonoBehaviour
             CloseToTheObject = false;
 
             if (interactText != null)
-            {
                 interactText.gameObject.SetActive(false);
-            }
         }
     }
-}  
-    
+}
