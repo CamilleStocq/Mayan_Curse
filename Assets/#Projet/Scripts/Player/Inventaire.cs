@@ -3,104 +3,123 @@
 
 // public class Inventaire : MonoBehaviour
 // {
-//     public static Inventaire instance; 
-
-//     [SerializeField] private Image itemSlot;
-//     private Sprite currentItemSprite;
+//     [SerializeField] private Image crystalPasRamasse;
+//     public static Inventaire instance; // singleton 
+//     private Sprite currentItemSprite = null; // pas d'objet ramassé pour le moment
 
 //     private void Awake()
 //     {
-//         if (instance == null)
-//             instance = this;
-//         else
-//             Destroy(gameObject);
+//         Debug.Log(" Awake exécuté !");
 
-//         itemSlot.enabled = false;
+//         if (instance == null)
+//         {
+//             instance = this;
+//             DontDestroyOnLoad(gameObject);
+//         }
+//         // else
+//         // {
+//         //     Destroy(gameObject);
+//         //     return;
+//         // }
+
+//         if (crystalPasRamasse != null)
+//         {
+//             crystalPasRamasse.enabled = true;
+//         }
 //     }
 
-//     public void AddItem(Sprite itemIcon)
+//     public void AddItem(Sprite itemIcon) // quand le joueur ramasse le crystal
 //     {
-//         currentItemSprite = itemIcon;
-//         itemSlot.sprite = itemIcon;
-//         itemSlot.enabled = true;
+//         if (Inventaire.instance == null)
+//         {
+//             Debug.Log("inventaire.instance");
+//         }
+
+//         if (crystalPasRamasse == null)
+//         {
+//             Debug.Log("crystal pas ramasseé");
+//         }
+
+
+//         Debug.Log("Objet ajouté");
+
+//         currentItemSprite = itemIcon; 
+
+//         if (crystalPasRamasse != null)
+//         {
+//             crystalPasRamasse.enabled = false; // disparait visuellement de l'ui
+//         }
 //     }
 
 //     public void RemoveItem()
 //     {
 //         currentItemSprite = null;
-//         itemSlot.sprite = null;
-//         itemSlot.enabled = false;
+//         if (crystalPasRamasse != null)
+//         {
+//             crystalPasRamasse.enabled = true; // on peut la remettre si nécessaire
+//         }
 //     }
 
 //     public bool HasCrystal()
 //     {
-//         return currentItemSprite != null && itemSlot.enabled;
+//         return currentItemSprite != null;
 //     }
 // }
 
+
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class Inventaire : MonoBehaviour
 {
     public static Inventaire instance;
 
-    [SerializeField] private List<Image> itemSlots; 
-
-    private List<Sprite> collectedCrystals = new List<Sprite>();
+    [Header("UI Crystals")]
+    [SerializeField] private Image crystal1;
+    [SerializeField] private Image crystal2;
+    [SerializeField] private Image crystal3;
+    [SerializeField] private Image crystal4;
 
     private void Awake()
     {
+        // Singleton sécurisé
         if (instance == null)
-            instance = this;
-        else
-            Destroy(gameObject);
-
-        foreach (var slot in itemSlots)
-            slot.enabled = false;
-    }
-
-    public void AddItem(Sprite itemIcon)
-    {
-        if (collectedCrystals.Count >= itemSlots.Count)
         {
-            Debug.Log("[Inventaire] Inventaire plein !");
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject);
             return;
         }
 
-        collectedCrystals.Add(itemIcon);
-        int index = collectedCrystals.Count - 1;
-
-        itemSlots[index].sprite = itemIcon;
-        itemSlots[index].enabled = true;
-
-        Debug.Log($"[Inventaire] Cristal ajouté dans le slot {index + 1}");
+        if (crystal1 != null) crystal1.enabled = true;
+        if (crystal2 != null) crystal2.enabled = true;
+        if (crystal3 != null) crystal3.enabled = true;
+        if (crystal4 != null) crystal4.enabled = true;
     }
 
-    public void UseCrystal()
+    public void GrabCrystal(string crystalNumber)
     {
-        if (collectedCrystals.Count == 0) return;
-
-        collectedCrystals.RemoveAt(0);
-
-        for (int i = 0; i < itemSlots.Count; i++)
+        switch (crystalNumber)
         {
-            if (i < collectedCrystals.Count)
-            {
-                itemSlots[i].sprite = collectedCrystals[i];
-                itemSlots[i].enabled = true;
-            }
-            else
-            {
-                itemSlots[i].sprite = null;
-                itemSlots[i].enabled = false;
-            }
+            case "Crystal1":
+                if (crystal1 != null) crystal1.enabled = false;
+                break;
+            case "Crystal2":
+                if (crystal2 != null) crystal2.enabled = false;
+                break;
+            case "Crystal3":
+                if (crystal3 != null) crystal3.enabled = false;
+                break;
+            case "Crystal4":
+                if (crystal4 != null) crystal4.enabled = false;
+                break;
+            
+            default:
+                Debug.LogWarning("Crystal number inconnue : " + crystalNumber);
+                break;
         }
-    }
-
-    public bool HasCrystal()
-    {
-        return collectedCrystals.Count > 0;
     }
 }

@@ -8,7 +8,7 @@
     
 //     private GameObject canBeGrab; 
 //     private GameObject heldObject; 
-//     private bool CloseToTheObject = false; 
+//     private bool CloseToTheObject = false;      
 //     private bool isHidden = false; 
 //     private Vector3 initialPosition;
 //     private Quaternion initialRotation;
@@ -19,7 +19,9 @@
 //         initialRotation = transform.rotation;
 
 //         if (interactText != null)
-//             interactText.gameObject.SetActive(false); 
+//         {
+//             interactText.gameObject.SetActive(false);
+//         }
 //     }
 
 //     void Update()
@@ -28,7 +30,7 @@
 //         {
 //             if (Input.GetKeyDown(KeyCode.Q))
 //             {
-//                 Debug.Log("Q pressé");
+//                 // Debug.Log("Q pressé");
 
 //                 if (heldObject == null)
 //                 {
@@ -44,14 +46,20 @@
 
 //     public void GrabbableObject()
 //     {
+//         if (canBeGrab == null)
+//         {
+//             Debug.Log(" Aucun objet à attraper !");
+//             return;
+//         }
+    
 //         heldObject = canBeGrab;
 //         heldObject.SetActive(false); 
 //         isHidden = true;
 
-//         if (Inventaire.instance != null && itemIcon != null)
-//         {
-//             Inventaire.instance.AddItem(itemIcon);
-//         }
+//         // if (Inventaire.instance != null && itemIcon != null)
+//         // {
+//         //     Inventaire.instance.AddItem(itemIcon);
+//         // }
 
 //         if (interactText != null)
 //             interactText.gameObject.SetActive(false);
@@ -66,15 +74,17 @@
 //         heldObject.transform.rotation = initialRotation;
 //         isHidden = false;
 
-//         if (Inventaire.instance != null)
-//         {
-//             Inventaire.instance.RemoveItem();
-//         }
+//         // if (Inventaire.instance != null && itemIcon != null)
+//         // {
+//         //     Inventaire.instance.RemoveItem();
+//         // }
 
 //         heldObject = null;
 
 //         if (interactText != null)
+//         {
 //             interactText.text = "Q";
+//         }
 //     }
 
 //     private void OnTriggerEnter(Collider other)
@@ -85,7 +95,9 @@
 //             CloseToTheObject = true;
 
 //             if (interactText != null)
+//             {
 //                 interactText.gameObject.SetActive(true);
+//             }
 //         }
 //     }
 
@@ -97,70 +109,30 @@
 //             CloseToTheObject = false;
 
 //             if (interactText != null)
+//             {
 //                 interactText.gameObject.SetActive(false);
+//             }
 //         }
 //     }
 // }
 
+
 using UnityEngine;
-using TMPro;
 
 public class Grabbable : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI interactText;
-    [SerializeField] private Sprite itemIcon;
-
-    private bool playerNearby = false;
-
-    void Start()
-    {
-        if (interactText != null)
-            interactText.gameObject.SetActive(false);
-    }
-
-    void Update()
-    {
-        if (playerNearby && Input.GetKeyDown(KeyCode.Q))
-        {
-            GrabCrystal();
-        }
-    }
-
-    void GrabCrystal()
-    {
-        if (Inventaire.instance == null)
-        {
-            Debug.LogWarning("[Grabbable] Inventaire non trouvé !");
-            return;
-        }
-
-        Inventaire.instance.AddItem(itemIcon);
-
-        gameObject.SetActive(false);
-
-        if (interactText != null)
-            interactText.gameObject.SetActive(false);
-
-        Debug.Log("[Grabbable] Cristal ramassé !");
-    }
+    [SerializeField] private string crystalNumber;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            playerNearby = true;
-            if (interactText != null)
-                interactText.gameObject.SetActive(true);
-        }
-    }
+            if (Inventaire.instance != null)
+            {
+                Inventaire.instance.GrabCrystal(crystalNumber);
+            }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            playerNearby = false;
-            if (interactText != null)
-                interactText.gameObject.SetActive(false);
+            gameObject.SetActive(false);
         }
     }
 }
