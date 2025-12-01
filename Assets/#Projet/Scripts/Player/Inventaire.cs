@@ -1,80 +1,10 @@
-// using UnityEngine;
-// using UnityEngine.UI;
-
-// public class Inventaire : MonoBehaviour
-// {
-//     [SerializeField] private Image crystalPasRamasse;
-//     public static Inventaire instance; // singleton 
-//     private Sprite currentItemSprite = null; // pas d'objet ramassé pour le moment
-
-//     private void Awake()
-//     {
-//         Debug.Log(" Awake exécuté !");
-
-//         if (instance == null)
-//         {
-//             instance = this;
-//             DontDestroyOnLoad(gameObject);
-//         }
-//         // else
-//         // {
-//         //     Destroy(gameObject);
-//         //     return;
-//         // }
-
-//         if (crystalPasRamasse != null)
-//         {
-//             crystalPasRamasse.enabled = true;
-//         }
-//     }
-
-//     public void AddItem(Sprite itemIcon) // quand le joueur ramasse le crystal
-//     {
-//         if (Inventaire.instance == null)
-//         {
-//             Debug.Log("inventaire.instance");
-//         }
-
-//         if (crystalPasRamasse == null)
-//         {
-//             Debug.Log("crystal pas ramasseé");
-//         }
-
-
-//         Debug.Log("Objet ajouté");
-
-//         currentItemSprite = itemIcon; 
-
-//         if (crystalPasRamasse != null)
-//         {
-//             crystalPasRamasse.enabled = false; // disparait visuellement de l'ui
-//         }
-//     }
-
-//     public void RemoveItem()
-//     {
-//         currentItemSprite = null;
-//         if (crystalPasRamasse != null)
-//         {
-//             crystalPasRamasse.enabled = true; // on peut la remettre si nécessaire
-//         }
-//     }
-
-//     public bool HasCrystal()
-//     {
-//         return currentItemSprite != null;
-//     }
-// }
-
-
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Inventaire : MonoBehaviour
 {
-    public static Inventaire instance;
+    public static Inventaire instance; // singleton
 
-    [Header("UI Crystals")]
     [SerializeField] private Image crystal1;
     [SerializeField] private Image crystal2;
     [SerializeField] private Image crystal3;
@@ -82,7 +12,6 @@ public class Inventaire : MonoBehaviour
 
     private void Awake()
     {
-        // Singleton sécurisé
         if (instance == null)
         {
             instance = this;
@@ -118,7 +47,7 @@ public class Inventaire : MonoBehaviour
                 break;
             
             default:
-                Debug.LogWarning("Crystal number inconnue : " + crystalNumber);
+                Debug.Log("Crystal number inconnue : " + crystalNumber);
                 break;
         }
     }

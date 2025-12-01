@@ -24,8 +24,6 @@ public class OpenChest : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.E)) // si on appuie sur la touche E
             {
-                //bool currentState = anim.GetBool("IsOpen");// récupère l'état actuel
-                //anim.SetBool("IsOpen", !currentState);// inverse l'état
                 bool isOpen = currentChestAnim.GetBool("IsOpen");
                 currentChestAnim.SetBool("IsOpen", !isOpen);
             }
@@ -34,24 +32,20 @@ public class OpenChest : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Openable"))
-        {
             //canBeOpen = other.gameObject;
             //CloseToTheObject = true;
-            if (other.CompareTag("Openable"))
+        if (other.CompareTag("Openable"))
         {
             currentChestAnim = other.GetComponent<Animator>();
             if (currentChestAnim != null)
             {
                 CloseToTheObject = true;
-                    if (interactText != null)
-                    {
-                        interactText.gameObject.SetActive(true);
-                    }
+                if (interactText != null)
+                {
+                    interactText.gameObject.SetActive(true);
+                }
             }
         }
-        }
-
     }
 
     private void OnTriggerExit(Collider other)

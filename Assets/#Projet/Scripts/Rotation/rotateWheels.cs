@@ -5,8 +5,8 @@ public class RotateWheels : MonoBehaviour
 {
     [SerializeField] private Transform wheel;
     [SerializeField] private Transform[] bridges;
-    [SerializeField] private GameObject interactWithE;
     [SerializeField] private Transform player;
+    [SerializeField] private GameObject interactUI;
     [SerializeField] private MonoBehaviour playerMovementScript; 
 
     private bool playerInTrigger = false;
@@ -16,10 +16,20 @@ public class RotateWheels : MonoBehaviour
 
     void Update()
     {
-        if (playerInTrigger && Input.GetKeyDown(KeyCode.E) && !isRotating)
+        bool playerIsMoving = Mathf.Abs(Input.GetAxis("Horizontal")) > 0.1f;
+
+        if (playerInTrigger && !isRotating && !playerIsMoving)  
         {
-            StartCoroutine(RotateWheelAndBridges(rotationStep, rotationDuration));
-            interactWithE.SetActive(false);
+            if (Input.GetKeyDown(KeyCode.LeftArrow)) // tourner vers la gauche
+            {
+                StartCoroutine(RotateWheelAndBridges(rotationStep, rotationDuration));
+                interactUI.SetActive(false);
+            }
+            else if (Input.GetKeyDown(KeyCode.RightArrow)) // tourner vers la droite
+            {
+                StartCoroutine(RotateWheelAndBridges(-rotationStep, rotationDuration));
+                interactUI.SetActive(false);
+            }
         }
     }
 
@@ -65,10 +75,12 @@ public class RotateWheels : MonoBehaviour
             yield return null;
         }
 
-        
         wheel.rotation = wheelEndRot;
+
         for (int i = 0; i < bridges.Length; i++)
+        {
             bridges[i].rotation = bridgesEndRot[i];
+        }
 
         
         if (playerMovementScript != null) // reactive le mouvement du joueur
@@ -76,7 +88,6 @@ public class RotateWheels : MonoBehaviour
             playerMovementScript.enabled = true;
         }
 
-        
         player.SetParent(null); // deparent tout à la fin
         wheel.SetParent(null);
 
@@ -88,7 +99,7 @@ public class RotateWheels : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInTrigger = true;
-            interactWithE.SetActive(true);
+            interactUI.SetActive(true);
         }
     }
 
@@ -97,7 +108,7 @@ public class RotateWheels : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInTrigger = false;
-            interactWithE.SetActive(false);
+            interactUI.SetActive(false);
         }
     }
 }

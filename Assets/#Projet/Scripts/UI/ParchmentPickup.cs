@@ -43,6 +43,7 @@ public class ParchmentPickup : MonoBehaviour
             playerIsTrigger = false;
     }
 
+
     private void ShowParchment()
     {
         if (parchmentUI != null) // affiche le parchemin
@@ -58,6 +59,7 @@ public class ParchmentPickup : MonoBehaviour
 
         Cursor.visible = true; // affiche et libère la souris
         Cursor.lockState = CursorLockMode.None;
+
     }
 
     public void CloseParchment()
