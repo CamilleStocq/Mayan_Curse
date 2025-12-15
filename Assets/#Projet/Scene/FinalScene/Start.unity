@@ -2003,14 +2003,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicSound:
   - name: Flute Maya
-    clip: {fileID: 8300000, guid: e5a82842e9dea4f489e853e8c8d5f465, type: 3}
+    clip: {fileID: 8300000, guid: 382bafa5bc06a784eb1568cfe23bce83, type: 3}
   sfxSound:
   - name: WAVES
     clip: {fileID: 8300000, guid: 34de65eecb2f8c542a915c9d9e4de344, type: 3}
   - name: SEAGULL
     clip: {fileID: 8300000, guid: 79e7658fb43ea934f9ae0d607c4b5bbb, type: 3}
-  - name: FOOTSTEPS
-    clip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
   musicSource: {fileID: 1730024622}
   sfxSource: {fileID: 31959908}
 --- !u!4 &808416923
@@ -2850,7 +2848,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: e5a82842e9dea4f489e853e8c8d5f465, type: 3}
+  m_Resource: {fileID: 8300000, guid: 382bafa5bc06a784eb1568cfe23bce83, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
