@@ -5,14 +5,15 @@ public class Grabbable : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI interactText;
     [SerializeField] private string crystalNumber;
+
     private bool CloseToTheObject = false;
 
-    void Start()
+    private void Start()
     {
         if (interactText != null)
-        {
-            interactText.gameObject.SetActive(false);
-        }
+            {
+                interactText.gameObject.SetActive(false);
+            }
     }
 
     private void Update()
@@ -24,20 +25,6 @@ public class Grabbable : MonoBehaviour
                 Inventaire.instance.GrabCrystal(crystalNumber);
             }
 
-            TeleportObject teleporter = FindObjectOfType<TeleportObject>();
-            if (teleporter != null)
-            {
-                // Cherche l'objet correspondant dans le tableau des cristaux
-                foreach (var c in teleporter.crystals)
-                {
-                    if (c.crystalPrefab.name == gameObject.name || c.crystalPrefab.name == crystalNumber)
-                    {
-                        // c.spawned = true;
-                        Debug.Log($"[TeleportObject] {c.crystalPrefab.name} marqué comme collecté");
-                        break;
-                    }
-                }
-            }
             gameObject.SetActive(false);
         }
     }
@@ -47,7 +34,8 @@ public class Grabbable : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             CloseToTheObject = true;
-            if (interactText != null)
+
+            if (interactText != null) 
             {
                 interactText.gameObject.SetActive(true);
             }
@@ -59,7 +47,8 @@ public class Grabbable : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             CloseToTheObject = false;
-            if (interactText != null)
+            
+            if (interactText != null) 
             {
                 interactText.gameObject.SetActive(false);
             }

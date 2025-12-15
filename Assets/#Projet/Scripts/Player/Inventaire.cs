@@ -1,14 +1,30 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Inventaire : MonoBehaviour
 {
-    public static Inventaire instance; // singleton
+    public static Inventaire instance;
 
-    [SerializeField] private Image crystal1;
-    [SerializeField] private Image crystal2;
-    [SerializeField] private Image crystal3;
-    [SerializeField] private Image crystal4;
+    [Header("UI")]
+    [SerializeField] private Image crystal1Image;
+    [SerializeField] private Image crystal2Image;
+    [SerializeField] private Image crystal3Image;
+    [SerializeField] private Image crystal4Image;
+
+    [Header("Grisés")]
+    [SerializeField] private Sprite crystal1Grey;
+    [SerializeField] private Sprite crystal2Grey;
+    [SerializeField] private Sprite crystal3Grey;
+    [SerializeField] private Sprite crystal4Grey;
+
+    [Header("Ramassés")]
+    [SerializeField] private Sprite crystal1Color;
+    [SerializeField] private Sprite crystal2Color;
+    [SerializeField] private Sprite crystal3Color;
+    [SerializeField] private Sprite crystal4Color;
+
+    private HashSet<string> collected = new HashSet<string>();
 
     private void Awake()
     {
@@ -22,11 +38,16 @@ public class Inventaire : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+        if (crystal1Image != null) 
+            {crystal1Image.sprite = crystal1Grey;}
+        if (crystal2Image != null) 
+            {crystal2Image.sprite = crystal2Grey;}
+        if (crystal3Image != null) 
+            {crystal3Image.sprite = crystal3Grey;}
+        if (crystal4Image != null) 
+            {crystal4Image.sprite = crystal4Grey;}
 
-        if (crystal1 != null) crystal1.enabled = true;
-        if (crystal2 != null) crystal2.enabled = true;
-        if (crystal3 != null) crystal3.enabled = true;
-        if (crystal4 != null) crystal4.enabled = true;
+        collected.Clear();
     }
 
     public void GrabCrystal(string crystalNumber)
@@ -34,21 +55,69 @@ public class Inventaire : MonoBehaviour
         switch (crystalNumber)
         {
             case "Crystal1":
-                if (crystal1 != null) crystal1.enabled = false;
+                if (crystal1Image != null) crystal1Image.sprite = crystal1Color;
+                collected.Add("Crystal1");
                 break;
+
             case "Crystal2":
-                if (crystal2 != null) crystal2.enabled = false;
+                if (crystal2Image != null) crystal2Image.sprite = crystal2Color;
+                collected.Add("Crystal2");
                 break;
+
             case "Crystal3":
-                if (crystal3 != null) crystal3.enabled = false;
+                if (crystal3Image != null) crystal3Image.sprite = crystal3Color;
+                collected.Add("Crystal3");
                 break;
+
             case "Crystal4":
-                if (crystal4 != null) crystal4.enabled = false;
+                if (crystal4Image != null) crystal4Image.sprite = crystal4Color;
+                collected.Add("Crystal4");
                 break;
-            
+
             default:
-                Debug.Log("Crystal number inconnue : " + crystalNumber);
+                Debug.LogWarning("[Inventaire] Crystal number inconnu : " + crystalNumber);
                 break;
         }
     }
+
+    public void PlaceCrystal(string crystalNumber)
+    {
+        switch (crystalNumber)
+        {
+            case "Crystal1":
+                if (crystal1Image != null) crystal1Image.sprite = crystal1Grey;
+                collected.Remove("Crystal1");
+                break;
+
+            case "Crystal2":
+                if (crystal2Image != null) crystal2Image.sprite = crystal2Grey;
+                collected.Remove("Crystal2");
+                break;
+
+            case "Crystal3":
+                if (crystal3Image != null) crystal3Image.sprite = crystal3Grey;
+                collected.Remove("Crystal3");
+                break;
+                
+            case "Crystal4":
+                if (crystal4Image != null) crystal4Image.sprite = crystal4Grey;
+                collected.Remove("Crystal4");
+                break;
+        }
+    }
+
+    public bool IsCrystalCollected(string crystalNumber)
+    {
+        return collected.Contains(crystalNumber);
+    }
+
+    public bool AllCrystalsCollected()
+    {
+        return 
+                collected.Contains("Crystal1") &&
+                collected.Contains("Crystal2") &&
+                collected.Contains("Crystal3") &&
+                collected.Contains("Crystal4");
+    }
 }
+

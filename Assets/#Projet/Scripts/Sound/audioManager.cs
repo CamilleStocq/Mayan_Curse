@@ -30,7 +30,7 @@ public class audioManager : MonoBehaviour
         musicSource.volume = musicVolume;
         sfxSource.volume = sfxVolume;
 
-        PlayMusic("Flute Maya");
+        PlayMusic("FluteMaya");
     }
 
     public void PlayMusic(string name)

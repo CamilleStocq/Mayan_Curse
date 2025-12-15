@@ -3,15 +3,15 @@ using System.Collections;
 
 public class OpenDoor : MonoBehaviour
 {
-    public Animator doorAnimator;      // Animator de la porte
-    public string triggerName = "OpenTrigger"; // Nom du trigger dans l'Animator
-    public float delay = 2f;           // Délai en secondes
+    [SerializeField] private Animator doorAnimator;      
+    [SerializeField] private string triggerName = "OpenTrigger"; 
+    [SerializeField] private float delay = 2f;           
 
-    private bool isOpening = false;    // Pour éviter de lancer plusieurs fois
+    private bool isOpening = false;    
 
-    void Update()
+    public void OpenDoorNow()
     {
-        if ( !isOpening && Input.GetKeyDown(KeyCode.O))
+        if (!isOpening)
         {
             isOpening = true;
             StartCoroutine(OpenDoorWithDelay());
@@ -22,6 +22,6 @@ public class OpenDoor : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         doorAnimator.SetTrigger(triggerName);
-        Debug.Log(" Porte ouverte !");
+        Debug.Log("Porte ouverte automatiquement !");
     }
 }

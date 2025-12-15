@@ -9,10 +9,8 @@ public class PlayerControll : MonoBehaviour
     [SerializeField] private float moveSpeed = 3f;
 
     private InputAction moveAction;
-
     private const string PLAYER_ACTION_MAP = "Player";
     private const string PLAYER_INPUT_ACTION = "Move";
-
     private bool isGrounded = false;
 
     void Awake()
@@ -39,16 +37,20 @@ public class PlayerControll : MonoBehaviour
     {
         Rigidbody rigidbody = GetComponent<Rigidbody>();
 
-         if(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow) ) {
+         if(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow) ) 
+         {
             transform.position += Vector3.forward * Time.deltaTime * moveSpeed;
          }
-         else if(Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) {
+         else if(Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow)) 
+         {
             rigidbody.position += Vector3.back * Time.deltaTime * moveSpeed;
          }
-         else if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
+         else if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) 
+         {
             rigidbody.position += Vector3.left * Time.deltaTime * moveSpeed;
          }
-         else if(Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
+         else if(Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) 
+         {
             rigidbody.position += Vector3.right * Time.deltaTime * moveSpeed;
          }
     }

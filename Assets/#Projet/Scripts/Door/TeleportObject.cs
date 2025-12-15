@@ -8,11 +8,10 @@ public class TeleportObject : MonoBehaviour
         public string crystalName;
         public GameObject crystalPrefab;
         public Transform spawnPoint;
-        [HideInInspector] public bool spawned = false; 
-
+        [HideInInspector] public bool spawned = false;
     }
 
-    public Crystal[] crystals; 
+    public Crystal[] crystals;
     private bool playerInTrigger = false;
 
     private void Update()
@@ -25,16 +24,43 @@ public class TeleportObject : MonoBehaviour
 
     private void SpawnCrystals()
     {
+        if (Inventaire.instance == null)
+        {
+            return;
+        }
+
         foreach (var crystal in crystals)
         {
-            if (!crystal.spawned && crystal.crystalPrefab != null && crystal.spawnPoint != null)
+            bool collected = Inventaire.instance.IsCrystalCollected(crystal.crystalName);
+
+            if (collected && !crystal.spawned && crystal.crystalPrefab != null && crystal.spawnPoint != null)
             {
                 GameObject obj = Instantiate(crystal.crystalPrefab, crystal.spawnPoint.position, Quaternion.identity);
-                obj.SetActive(true); // s'assure qu'il est visible
+                obj.SetActive(true);
                 crystal.spawned = true;
-
             }
         }
+
+        if (AllCrystalsPlaced())
+        {
+            OpenDoor door = FindObjectOfType<OpenDoor>();
+            if (door != null)
+            {
+                door.OpenDoorNow();
+            }
+        }
+    }
+
+    public bool AllCrystalsPlaced()
+    {
+        foreach (var crystal in crystals)
+        {
+            if (!crystal.spawned) 
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -42,12 +68,12 @@ public class TeleportObject : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInTrigger = true;
-        }
+        } 
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player")) 
         {
             playerInTrigger = false;
         }
